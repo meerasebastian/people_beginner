@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   leg_detector
   message_generation
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -126,6 +127,7 @@ include_directories(
 ## Declare a C++ executable
 add_executable(legdata 
 		src/legdata.cpp)
+add_executable(people_tf_broadcaster src/people_tf_broadcaster.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -135,6 +137,8 @@ add_executable(legdata
 target_link_libraries(legdata 
    ${catkin_LIBRARIES}
  )
+
+target_link_libraries(people_tf_broadcaster ${catkin_LIBRARIES})
 
 #############
 ## Install ##
