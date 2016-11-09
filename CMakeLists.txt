@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   people_msgs
   roscpp
+  rospy
   leg_detector
   message_generation
   tf
@@ -65,6 +66,7 @@ find_package(catkin REQUIRED COMPONENTS
 generate_messages(
   DEPENDENCIES
    std_msgs  # Or other packages containing msgs
+   
 )
 
 ################################################
@@ -99,7 +101,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES people_beginner
-   CATKIN_DEPENDS people_msgs message_runtime std_msgs 
+   CATKIN_DEPENDS people_msgs message_runtime std_msgs
 #  DEPENDS system_lib
 )
 
@@ -124,6 +126,8 @@ include_directories(
 ## either from message generation or dynamic reconfigure
 ##add_dependencies(people_beginner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+
+
 ## Declare a C++ executable
 add_executable(legdata 
 		src/legdata.cpp)
@@ -133,12 +137,17 @@ add_executable(people_tf_broadcaster src/people_tf_broadcaster.cpp)
 ## same as for the library above
 # Need to change this--> add_dependencies(people_beginner_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+
+
 ## Specify libraries to link a library or executable target against
 target_link_libraries(legdata 
    ${catkin_LIBRARIES}
  )
 
 target_link_libraries(people_tf_broadcaster ${catkin_LIBRARIES})
+
+#add_dependencies(people_beginner ${catkin_EXPORTED_TARGETS})
+#add_dependencies(san_nodes ${catkin_EXPORTED_TARGETS})
 
 #############
 ## Install ##

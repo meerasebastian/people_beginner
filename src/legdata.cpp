@@ -9,16 +9,17 @@
 #include <people_beginner/peopleDetails.h>
 #include <visualization_msgs/Marker.h>
 
-#include<people_beginner/peopleDetails.h>
-#include<people_beginner/peopleHallwayFeatures.h>
-#include<hallway/hallwayMsg.h>
+#include <people_beginner/peopleDetails.h>
+#include <people_beginner/peopleHallwayFeatures.h>
+#include <hallway/hallwayMsg.h>
 
-#include<string.h>
-#include<math.h>
-#include<fstream>
-#include<ctime>
+#include <string.h>
+#include <math.h>
+#include <fstream>
+#include <ctime>
 
-
+#include "san_nodes/Appscore.h"
+#include "san_nodes/Classify.h"
 using namespace std;
 
 struct distanceFromPR2{
@@ -212,10 +213,51 @@ int main( int argc, char* argv[] ){
   
   ros::Subscriber people_sub = nh.subscribe("people_tracker_measurements", 1000, peoplePositionCallback);
   ros::Subscriber hallway_sub = nh.subscribe("hallway_data", 1000, hallwayDetectionCallback);
+
   
   people_features = nh.advertise<people_beginner::peopleDetails>("peopleFeatures",1000);
   hallway_pub = nh.advertise<people_beginner::peopleHallwayFeatures>("peopleHallwayFeatures",1000);
   
+    ros::ServiceClient sanClientA = nh.serviceClient<san_nodes::Appscore>("give_appscore");
+  san_nodes::Appscore srvA;
+
+
+
+  
+  std::vector<std::string> input;
+  
+  input.push_back("0.99");
+  input.push_back("81.27");
+  input.push_back("61.79");
+  input.push_back("109.85");
+  input.push_back("108.4");
+  
+
+  
+  // for (int i = 0; i < input.size(); ++i)
+  // {
+  //  ROS_INFO("%s", input[i].c_str());
+  // }
+
+  //string input[8] = {"0", "0", "0", "0", "0", "0", "0", "0"};
+
+  srvA.request.sample = input;
+  if (sanClientA.call(srvA))
+  {
+    std::vector<double> appScoreProbs = srvA.response.classify_probs;
+    //ROS_INFO("Classification probabilities size: %ld", appScoreProbs.size());
+    for (int i = 0; i < appScoreProbs.size(); ++i)
+    {
+      ROS_INFO("%f", appScoreProbs[i]);
+      cout << appScoreProbs[i] << endl;
+    }
+  }
+  else
+  {
+    ROS_ERROR("Failed to call service");
+    return 1;
+  }
+ 
   ros::spin();
   
   return 0;
